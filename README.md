@@ -61,3 +61,4 @@ Pure stdlib + `requests` (HTTP) + `reportlab` (real PDF export). Termux: `pkg in
 `core/terminal.py` / `ai/` / `git/` / `build/` / `utils/` — these belonged
 to a different, free-text conversational agent architecture (v2) that does
 not match the PDF's numbered-menu spec.
+# SA-agnet-phone-remix-
