@@ -230,8 +230,21 @@ def guess_target_files(bug_text):
 
 def parse_file_blocks(ai_text):
     pattern = re.compile(r"### FILE:\s*(.+?)\n(.*?)### END FILE", re.DOTALL)
-    return {m.group(1).strip(): m.group(2) for m in pattern.finditer(ai_text)}
+    out = {}
+    for m in pattern.finditer(ai_text):
+        rel_path = m.group(1).strip()
+        content = m.group(2).strip()
 
+        if content.startswith("```python"):
+            content = content[len("```python"):].lstrip()
+        elif content.startswith("```"):
+            content = content[3:].lstrip()
+
+        if content.endswith("```"):
+            content = content[:-3].rstrip()
+
+        out[rel_path] = content
+    return out
 
 def validate_and_write(rel_path, content):
     full_path = os.path.join(REPO_DIR, rel_path)
