@@ -12,14 +12,14 @@ from core import data_store as ds
 
 class MsgBox:
     def __init__(self):
-        self.state = ds.load("msgbox", {"messages": [], "archived": []})
+        self.state = ds.load("msgbox", {"messages": [], "archived": [], "next_id": 1})
 
     def _save(self):
         ds.save("msgbox", self.state)
 
     def add(self, project, text, needs_reply=False):
         entry = {
-            "id": len(self.state["messages"]) + len(self.state["archived"]) + 1,
+            "id": self.state["next_id"],
             "project": project,
             "text": text,
             "needs_reply": needs_reply,
@@ -28,6 +28,7 @@ class MsgBox:
             "created": ds.now_iso(),
         }
         self.state["messages"].append(entry)
+        self.state["next_id"] += 1
         self._save()
         return entry
 
