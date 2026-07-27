@@ -78,6 +78,12 @@ class AIEngineStatus:
         self.state[engine]["pct"] = 0
         self._save()
 
+    def is_any_engine_coding(self):
+        return any(
+            self.state.get(e, {}).get("status") == "Coding"
+            for e in ("groq", "offline")
+        )
+
     def generate(self, engine, system_prompt, user_prompt):
         """REAL call to the chosen engine. Returns (ok, text_or_message).
         Never raises -- network/key problems become the exact status

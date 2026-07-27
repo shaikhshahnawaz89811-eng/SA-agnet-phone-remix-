@@ -498,7 +498,12 @@ class SAAgent:
                 sid = ask("Sub-task ID: ").strip()
                 new_text = ask("Naya text: ").strip()
                 if sid.isdigit():
-                    ok, msg = self.blueprint.edit(name, int(sid), new_text)
+                    ok, msg = self.blueprint.edit(
+                        name,
+                        int(sid),
+                        new_text,
+                        active_write_in_progress=self.ai_status.is_any_engine_coding()
+                    )
                     print(f"  {msg}")
             elif c == "3":
                 ok, msg = self.pw.verify(ask("Password: "))
