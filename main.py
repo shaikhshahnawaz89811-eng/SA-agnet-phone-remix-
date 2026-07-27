@@ -167,7 +167,7 @@ class SAAgent:
         if not ok:
             print(f"  {msg}")
             return
-        readme_sync(name)
+        readme_sync(name, structural_change_summary=f"Project created via {source_type}")
         if is_apk:
             ci_workflow_auto_create(name, True)
         print(f"  Project '{name}' created. ({msg})")
@@ -191,7 +191,7 @@ class SAAgent:
         is_apk = "Kotlin" in langs or "Gradle" in langs
         ok, msg = self.projects.create(name, "github", languages=langs, is_apk=is_apk)
         print(f"  {msg} Languages detected: {langs}")
-        readme_sync(name)
+        readme_sync(name, structural_change_summary=f"Project created via {source_type}")
         if is_apk:
             ci_workflow_auto_create(name, True)
 
@@ -210,7 +210,7 @@ class SAAgent:
         is_apk = "Kotlin" in langs or "Gradle" in langs
         ok, msg = self.projects.create(name, "zip", languages=langs, is_apk=is_apk)
         print(f"  {msg} Languages detected: {langs}")
-        readme_sync(name)
+        readme_sync(name, structural_change_summary=f"Project created via {source_type}")
         if is_apk:
             ci_workflow_auto_create(name, True)
         git_ops.init_repo(dest)
