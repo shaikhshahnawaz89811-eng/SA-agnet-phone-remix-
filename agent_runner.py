@@ -258,6 +258,23 @@ def validate_and_write(rel_path, content):
             os.unlink(tmp_path)
             return False, f"Syntax error, file NOT written: {e.exc_value}"
         os.unlink(tmp_path)
+    if os.path.exists(full_path):
+        try:
+            with open(full_path, "r", encoding="utf-8") as f:
+                old_content = f.read()
+
+            old_lines = len(old_content.splitlines())
+            new_lines = len(content.splitlines())
+
+            if old_lines >= 200 and new_lines < (old_lines // 2):
+                return False, (
+                    f"Large destructive rewrite detected "
+                    f"({old_lines} -> {new_lines} lines). "
+                    "File NOT written."
+                )
+        except Exception:
+            pass
+
     os.makedirs(os.path.dirname(full_path) or ".", exist_ok=True)
     with open(full_path, "w", encoding="utf-8") as f:
         f.write(content)
