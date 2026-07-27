@@ -212,20 +212,23 @@ def next_open_bug(state_text):
 
 
 def extract_bug_block(state_text, bug_id):
-    lines = state_text.split("## 7.", 1)[-1].split("## 8.", 1)[0].splitlines()
-    out, capture = [], False
-    for line in lines:
-        if bug_id in line and "**" in line:
-            capture = True
-        elif capture and re.match(r"^\d+\.\s+\*\*\[", line):
-            break
-        if capture:
-            out.append(line)
-    return "\n".join(out).strip()
+    section = state_text.split("## 7.", 1)[-1].split("## 8.", 1)[0]
+
+    m = re.search(rf"{re.escape(bug_id)}.*", section, re.DOTALL)
+    return m.group(0).strip() if m else ""
 
 
 def guess_target_files(bug_text):
-    return sorted(set(re.findall(r"`(core/[a-zA-Z_]+\.py|main\.py)`", bug_text)))
+    files = set(re.findall(r"`(core/[a-zA-Z_]+\.py|main\.py|scan_engine\.py)`", bug_text))
+
+    if "scan_engine.py" in files:
+        files.remove("scan_engine.py")
+        files.add("core/scan_engine.py")
+
+    if "BUG-6" in bug_text:
+        files.update({"main.py", "core/scan_engine.py"})
+
+    return sorted(files)
 
 
 def parse_file_blocks(ai_text):
@@ -338,8 +341,12 @@ def main():
         "Rule 10 (correctness), Rule 19 (copy-first/no live-file risk), "
         "Rule 21 (chhota function, no extra line, no dead loop) follow karo. "
         "Sirf diye gaye bug fix karo, kuch aur unrelated mat badlo. "
+        "IMPORTANT: Existing large files ko kabhi rewrite mat karo. "
+        "Agar file 200+ lines ki hai to sirf minimal patch do. "
+        "Original functions, imports aur structure preserve karo. "
+        "Agar poora file dena zaroori ho to purane file content ke barabar functionality rehni chahiye. "
         "Reply SIRF is format me, har badli hui file ke liye:\n"
-        "### FILE: relative/path.py\n<poora naya file content>\n### END FILE\n"
+        "### FILE: relative/path.py\n<changed file content>\n### END FILE\n"
         "Koi extra prose iske bahar mat likho."
     )
     file_blocks = "\n\n".join(f"### FILE: {p}\n{c}" for p, c in files_content.items())
