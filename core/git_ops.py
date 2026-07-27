@@ -54,10 +54,15 @@ def set_remote(project_dir, remote_url):
     return _run(["git", "remote", "add", "origin", remote_url], cwd=project_dir)
 
 
-def push(project_dir, branch="main"):
+def push(project_dir):
     """[v17] Reconcile check before push: detect partial/half-committed
     state (uncommitted changes) and commit them first so a push never
     goes out half-done."""
+    branch_ok, branch_out = _run(["git", "branch", "--show-current"], cwd=project_dir)
+    if not branch_ok:
+        return False, "Failed to detect current branch."
+    branch = branch_out.strip()
+    
     dirty_ok, dirty_out = _run(["git", "status", "--porcelain"], cwd=project_dir)
     if dirty_ok and dirty_out.strip():
         add_all(project_dir)
@@ -91,4 +96,3 @@ def detect_languages(project_dir):
             if ext in ext_map:
                 found.add(ext_map[ext])
     return sorted(found)
-
