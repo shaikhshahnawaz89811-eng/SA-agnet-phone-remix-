@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+*.pyo
+data/
+projects/
+.pythonlibs/
+*.pdf
+agent_config.json
