@@ -383,7 +383,7 @@ class SAAgent:
 
         if not ok:
             self.msgbox.add(name, text, needs_reply=True)
-            self.task_monitor.stop(task["id"])
+            self.task_monitor.stop(task["id"], sandbox_mid_validation=True)
             print(f"  {text}")
             return
 
