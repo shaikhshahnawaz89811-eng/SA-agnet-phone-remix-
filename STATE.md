@@ -34,7 +34,7 @@
 | core/security.py | ✅ | Password/lockout/recovery + Credential Store sahi |
 | core/pdf_and_zip.py | ✅ | Real PDF export + real zip extraction, sahi error messages |
 | core/scan_engine.py | 🟡 | Syntax-check + dead-code detection sahi; "fixed" list hamesha khaali — auto-clean by-design implement nahi (BUG-8, design-note) |
-| core/helpers.py | 🟡 | `ci_workflow_auto_create` sahi wired; `readme_sync`'s structural-update branch kabhi trigger nahi hota (BUG-5) |
+| core/helpers.py | 🟡 | `ci_workflow_auto_create` sahi wired; `readme_sync` structural-update branch ab call-sites se trigger hoti hai (BUG-5) |
 | core/ui.py | ✅ | Organised-table/status-bar sahi, spec match karta hai |
 | core/__init__.py | ✅ | Khaali init file, issue nahi |
 
@@ -60,7 +60,7 @@
 2. **[MEDIUM][FIXED] BUG-2 — Push branch hardcoded.** File: `core/git_ops.py` Function: `push()`. `branch="main"` fixed hai. Cloned repo ka default "master" ho to push fail hoga. Fix: push se pehle `git branch --show-current` se actual branch detect karo.
 3. **[MEDIUM][FIXED] BUG-3 — MsgBox id collision risk.** File: `core/msgbox.py` Function: `add()`. `msgbox.add()` me id = `len(messages)+len(archived)+1` — persisted counter nahi hai. Archive ke baad do entries same id le sakti hai. Fix: `data_store` me persisted incrementing counter.
 4. **[LOW][FIXED] BUG-4 — Do dead parameters. File: `main.py` exact call-sites only. Line 386: `task_monitor.stop(task["id"])` validation failure path hai, yahan `sandbox_mid_validation=True` pass karo. Line 501: `blueprint.edit(...)` me `active_write_in_progress` ko actual AI writing state ke hisaab se pass karo. Line 656: normal stop hai, default False rehne do. IMPORTANT: Do not rewrite full main.py. Make minimal targeted edits only at the listed call-sites. Preserve all existing code. Related: `core/task_monitor.py::stop()` and `core/blueprint.py::edit()`.
-5. **[LOW][OPEN] BUG-5 — README structural-update kabhi nahi hota.** `readme_sync(name, structural_change_summary=...)` teeno call-sites me sirf `readme_sync(name)` hi call hota hai. Task complete hone ke baad README kabhi update nahi hota (spec §28).
+5. **[LOW][FIXED] BUG-5 — README structural-update kabhi nahi hota.** `readme_sync(name, structural_change_summary=...)` teeno call-sites me sirf `readme_sync(name)` hi call hota hai. Task complete hone ke baad README kabhi update nahi hota (spec §28).
 6. **[LOW][OPEN] BUG-6 — Errors Fix menu stub.** Main Menu option 6 sirf static line print karta hai. `scan_engine.py` ka real `error_pending` data yahan surface nahi hota (spec §32).
 7. **[LOW][OPEN] BUG-7 — Stale/galat docstrings.** `ai_engine.py` header "stubbed" bolta hai jabki real Groq call ho rahi hai; `git_engine.py` header `_run_git()` reference karta hai jo file me exist hi nahi karta.
 8. **[DESIGN NOTE, not a bug] BUG-8 — Full Scan & Fix kabhi auto-clean nahi karta.** `scan_engine.py` deliberately sirf FLAG karta hai (docstring me hi likha hai), kabhi delete nahi. Spec §23 se safe-side intentional deviation — bug nahi, sirf note.
