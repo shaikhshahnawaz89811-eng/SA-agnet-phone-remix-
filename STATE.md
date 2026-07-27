@@ -57,7 +57,7 @@
 
 ## 7. Known Bugs / Risks (Priority order — delete mat karo, sirf status update karo jab fix ho)
 1. **[HIGH][FIXED] BUG-1 — `set_remote()` orphan function.** `core/git_ops.py` me defined hai, par poori codebase me kahin call nahi hoti. Zip/Task/Chat se bana project "Git push change" try karega toh hamesha "remote configure karein" error dega — UI me remote add karne ka option hi nahi. Fix: GitHub Setting menu me "Set/Update Remote URL" option add karke `git_ops.set_remote()` call karo.
-2. **[MEDIUM][OPEN] BUG-2 — Push branch hardcoded.** File: `core/git_ops.py` Function: `push()`. `branch="main"` fixed hai. Cloned repo ka default "master" ho to push fail hoga. Fix: push se pehle `git branch --show-current` se actual branch detect karo.
+2. **[MEDIUM][FIXED] BUG-2 — Push branch hardcoded.** File: `core/git_ops.py` Function: `push()`. `branch="main"` fixed hai. Cloned repo ka default "master" ho to push fail hoga. Fix: push se pehle `git branch --show-current` se actual branch detect karo.
 3. **[MEDIUM][OPEN] BUG-3 — MsgBox id collision risk.** `msgbox.add()` me id = `len(messages)+len(archived)+1` — persisted counter nahi hai. Archive ke baad do entries same id le sakti hai. Fix: `data_store` me persisted incrementing counter.
 4. **[LOW][OPEN] BUG-4 — Do dead parameters.** `task_monitor.stop(sandbox_mid_validation=...)` (§36) aur `blueprint.edit(active_write_in_progress=...)` (§18) — call-sites me hamesha default False jaata hai, koi caller True nahi bhejta. Fix: `main.py` me actual condition check karke sahi value pass karo.
 5. **[LOW][OPEN] BUG-5 — README structural-update kabhi nahi hota.** `readme_sync(name, structural_change_summary=...)` teeno call-sites me sirf `readme_sync(name)` hi call hota hai. Task complete hone ke baad README kabhi update nahi hota (spec §28).
@@ -74,6 +74,7 @@
 5. BUG-6 — Errors Fix ko scan_engine se connect karo
 
 ## 9. Session Log (append-only, purana kabhi mat hatao)
+- **[2026-07-28 01:35]** — BUG-2 fixed by agent_runner.py (provider: groq), committed to git.
 - **[2026-07-28 01:09]** — BUG-1 fixed by agent_runner.py (provider: groq), committed to git.
 - **[Session 1]** — Zip upload hua, initial structure review hua. STATE.md banaya gaya.
 - **[Session 2]** — Poora audit hua: Master Documentation PDF + rules_updated PDF + zip ka poora code (21 files) Rule 1-21 ke against manually cross-check kiya gaya. 9 findings mile (BUG-1 se BUG-8 + GAP-1), priority order me list kiye gaye. Koi fix abhi apply nahi hua — sirf audit.
